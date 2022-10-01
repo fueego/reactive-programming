@@ -1,0 +1,40 @@
+<div class="w-full" *ngIf="linkDetails; else noData">
+  <div class="info space-y-2">
+    <div class="flex items-center">
+      <mat-icon class="mr-2 text-slate-600">link</mat-icon>
+      <h2>{{ linkDetails.url }}</h2>
+    </div>
+    <div class="flex items-center">
+      <mat-icon class="mr-2 text-slate-600">description</mat-icon>
+      <span> {{ linkDetails.shortDescription }} </span>
+    </div>
+    <hr class="bg-slate-700 my-2" />
+    <div class="py-4 px-2" *ngIf="notes; else addNotes">
+      {{ notes.notes }}
+      <hr class="bg-slate-700 my-2" />
+      <div class="flex justify-center items-center py-2">
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="removeNote(notes.noteId ?? '')"
+        >
+          Usuń
+        </button>
+      </div>
+    </div>
+
+    <ng-template #addNotes>
+      <form (ngSubmit)="addNote()">
+        <mat-form-field class="w-full" appearance="standard">
+          <mat-label>Dodatkowe informacje</mat-label>
+          <textarea matInput [(ngModel)]="noteData" name="note"></textarea>
+        </mat-form-field>
+
+        <div class="flex justify-center items-center py-2">
+          <button type="submit" mat-raised-button color="primary">Dodaj</button>
+        </div>
+      </form>
+    </ng-template>
+  </div>
+</div>
+<ng-template #noData> Brak danych </ng-template>

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+canvas {
+    display: inline-block;
+}
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";

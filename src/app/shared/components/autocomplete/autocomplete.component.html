@@ -1,0 +1,23 @@
+<mat-form-field class="example-full-width" appearance="standard">
+  <mat-label>Kategoria</mat-label>
+  <input
+    type="text"
+    matInput
+    [formControl]="myControl"
+    [matAutocomplete]="auto"
+    (focus)="handleFocus()"
+  />
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    (optionSelected)="handleSelection($event)"
+    [displayWith]="displayFn"
+  >
+    <mat-option [value]="allCategoriesOption">Pokaż wszystko</mat-option>
+    <mat-option
+      *ngFor="let option of filteredOptions$ | async"
+      [value]="option"
+    >
+      {{ option.name }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

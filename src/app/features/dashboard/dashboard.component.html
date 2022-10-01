@@ -1,0 +1,45 @@
+<div
+  class="flex flex-col px-4 md:flex-row md:justify-items-center md:px-0 md:items-start"
+>
+  <div class="bg-white rounded-md w-full mb-4 p-2 flex-auto md:mx-2">
+    <div class="flex justify-between">
+      <span class="text-md text-slate-700">Kategorie: </span>
+      <span
+        class="text-md text-slate-700 cursor-pointer"
+        (click)="handleShowAll()"
+      >
+        Pokaż wszystko
+      </span>
+    </div>
+    <hr class="bg-slate-700 my-2" />
+    <ng-container *ngIf="allCategories$ | async as allCategories">
+      <ng-container *ngFor="let cat of allCategories">
+        <app-category-item
+          [categoryDetails]="cat"
+          (categoryAction)="handleCategoryAction($event)"
+        ></app-category-item>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="bg-white rounded-md w-full mb-4 p-2 flex-auto md:mx-2">
+    <span class="text-md text-slate-700">Linki: </span>
+    <hr class="bg-slate-700 my-2" />
+    <ng-container *ngIf="allLinks$ | async as allLinks">
+      <ng-container *ngFor="let link of allLinks">
+        <app-category-link
+          [linkDetails]="link"
+          (linkAction)="handleLinkAction($event)"
+        >
+        </app-category-link>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="bg-white rounded-md w-full mb-4 p-2 flex-auto md:mx-2">
+    <span class="text-md text-slate-700">Szczegóły linku: </span>
+    <hr class="bg-slate-700 my-2" />
+    <app-category-details
+      [linkDetails]="linkDetails$ | async"
+      [notes]="notes$ | async"
+    ></app-category-details>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="flex justify-between my-4 items-center">
+  <div class="link-data flex items-center">
+    <div class="icon cursor-pointer mr-4" (click)="handleLinkClick()">
+      <mat-icon class="text-slate-600">link</mat-icon>
+    </div>
+
+    <div
+      class="shortInfoAndLink flex flex-col cursor-pointer"
+      (click)="handleLinkDetails()"
+    >
+      <span class="text-lg font-semibold">{{
+        linkDetails.shortDescription
+      }}</span>
+      <span class="text-xs">{{ linkDetails.url }}</span>
+    </div>
+  </div>
+
+  <mat-icon class="text-red-500 cursor-pointer" (click)="handleRemoveLink()">
+    restore_from_trash
+  </mat-icon>
+</div>

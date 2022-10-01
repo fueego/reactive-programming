@@ -1,0 +1,59 @@
+<div class="w-96">
+  <h1 mat-dialog-title>Dodaj nowy link</h1>
+  <div mat-dialog-content *ngIf="data.categories$ | async as categories">
+    <p>W celu dodania nowego linku wypełnij poniższy formularz</p>
+    <form [formGroup]="addItemFormGroup">
+      <div class="input-ln">
+        <mat-form-field appearance="standard">
+          <mat-label>Nazwa kategorii</mat-label>
+          <mat-select formControlName="categoryId">
+            <mat-option *ngFor="let cat of categories" [value]="cat.categoryId">
+              {{ cat.name }}
+            </mat-option>
+          </mat-select>
+
+          <mat-error *ngIf="getControl('categoryId').hasError('required')">
+            Nazwa kategorii jest wymagana
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="input-ln">
+        <mat-form-field appearance="standard">
+          <mat-label>Krótki opis linku</mat-label>
+          <input
+            matInput
+            formControlName="shortDescription"
+            autocomplete="off"
+          />
+          <mat-error
+            *ngIf="getControl('shortDescription').hasError('required')"
+          >
+            Krótka nazwa linku jest wymagana
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="input-ln">
+        <mat-form-field appearance="standard">
+          <mat-label>Url</mat-label>
+          <input matInput formControlName="url" autocomplete="off" />
+          <mat-error *ngIf="getControl('url').hasError('required')">
+            Adres odnośnia jest wymagany
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div mat-dialog-actions class="flex justify-between">
+    <button mat-raised-button mat-dialog-close>Zamknij</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="handleClose()"
+      [disabled]="!isFormValid()"
+    >
+      Dodaj link
+    </button>
+  </div>
+</div>

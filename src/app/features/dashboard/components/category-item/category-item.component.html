@@ -1,0 +1,25 @@
+<div class="category-item flex justify-between items-middle my-4">
+  <div class="flex justify-start items-center">
+    <span
+      class="w-3 h-3 rounded-full mr-2"
+      [style.background-color]="categoryDetails?.color"
+    ></span>
+    <span
+      class="text-slate-600 cursor-pointer"
+      (click)="handleCategoryClick()"
+      #tooltip="matTooltip"
+      matTooltipPosition="right"
+      matTooltipHideDelay="500"
+      [matTooltip]="categoryDetails?.description || ''"
+      >{{ categoryDetails?.name }}</span
+    >
+  </div>
+  <div class="flex items-center space-x-1">
+    <mat-icon
+      class="text-red-500 cursor-pointer"
+      (click)="handleRemoveCategory()"
+    >
+      restore_from_trash
+    </mat-icon>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="w-96">
+  <h1 mat-dialog-title>Dodaj nową kategorię</h1>
+  <div mat-dialog-content>
+    <p>W celu dodania nowej kategorii wypełnij poniższy formularz</p>
+    <form [formGroup]="addCategoryFormGroup">
+      <div class="input-ln">
+        <mat-form-field appearance="standard">
+          <mat-label>Nazwa kategorii</mat-label>
+          <input matInput formControlName="name" autocomplete="off" />
+          <mat-error *ngIf="getControl('name').hasError('required')">
+            Nazwa kategorii jest wymagana
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="input-ln">
+        <mat-form-field appearance="standard">
+          <mat-label>Opis kategorii</mat-label>
+          <input matInput formControlName="description" autocomplete="off" />
+        </mat-form-field>
+      </div>
+
+      <div class="input-ln">
+        <mat-form-field appearance="standard">
+          <input
+            matInput
+            formControlName="color"
+            [ngxMatColorPicker]="picker"
+            autocomplete="off"
+          />
+          <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
+          <ngx-mat-color-picker #picker [color]="color"></ngx-mat-color-picker>
+
+          <mat-error *ngIf="getControl('color').hasError('required')">
+            Kolor kategorii jest wymagany
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div mat-dialog-actions class="flex justify-between">
+    <button mat-raised-button mat-dialog-close>Zamknij</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="handleClose()"
+      [disabled]="!isFormValid()"
+    >
+      Dodaj Kategorię
+    </button>
+  </div>
+</div>
