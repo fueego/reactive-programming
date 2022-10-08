@@ -12,14 +12,13 @@ import * as actions from './actions';
 export class CategoryEffects {
   getCategories$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.fetchCategories),
+      ofType(actions.CategoryActions.fetchCategories),
       switchMap(() =>
         this.categorySrvc.getCategories().pipe(
-          map((categories) => actions.addCategories({ categories })),
-          catchError(() => {
-            actions.clearCategories();
-            return EMPTY;
-          })
+          map((categories) =>
+            actions.CategoryActions.addCategories({ categories })
+          ),
+          catchError(() => of(actions.CategoryActions.clearCategories()))
         )
       )
     )
@@ -27,49 +26,42 @@ export class CategoryEffects {
 
   addCategory$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.addCategory),
+      ofType(actions.CategoryActions.addCategory),
       switchMap(({ newCategory: category }: { newCategory: Category }) =>
         this.categorySrvc.createCategory(category).pipe(
-          map(() => actions.fetchCategories()),
+          map(() => actions.CategoryActions.fetchCategories()),
           catchError(() => {
             return EMPTY;
           })
         )
       )
-    )
-  );
-
-  successCategoryAddFetchLinks$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(actions.addCategories),
-      switchMap(() => of(actions.fetchLinks()))
     )
   );
 
   removeCategory$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.removeCategory),
+      ofType(actions.CategoryActions.removeCategory),
       switchMap(({ selectCategory: category }: { selectCategory: Category }) =>
         this.categorySrvc.removeCategory(category).pipe(
-          map(() => actions.fetchCategories()),
           catchError(() => {
             return EMPTY;
           })
         )
-      )
+      ),
+      switchMap(() => [
+        actions.CategoryActions.fetchCategories(),
+        actions.LinkActions.fetchLinks(),
+      ])
     )
   );
 
   getLinks$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.fetchLinks),
+      ofType(actions.LinkActions.fetchLinks),
       switchMap(() =>
         this.linksSrvc.getLinks().pipe(
-          map((links) => actions.addLinks({ links })),
-          catchError(() => {
-            actions.clearLinks();
-            return EMPTY;
-          })
+          map((links) => actions.LinkActions.addLinks({ links })),
+          catchError(() => of(actions.LinkActions.clearLinkDetails()))
         )
       )
     )
@@ -77,10 +69,10 @@ export class CategoryEffects {
 
   addLink$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.addLink),
+      ofType(actions.LinkActions.addLink),
       switchMap(({ link }) =>
         this.linksSrvc.createLink(link).pipe(
-          map(() => actions.fetchLinks()),
+          map(() => actions.LinkActions.fetchLinks()),
           catchError(() => {
             return EMPTY;
           })
@@ -91,59 +83,52 @@ export class CategoryEffects {
 
   removeLink$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.removeLink),
-      switchMap(({ linkIdToRemove: catIdToRemove }) =>
+      ofType(actions.LinkActions.removeLink),
+      switchMap(({ linkIdToRemove }) =>
         this.linksSrvc
-          .removeLink(catIdToRemove)
-          .pipe(map(() => actions.fetchLinks()))
+          .removeLink(linkIdToRemove)
+          .pipe(map(() => actions.LinkActions.fetchLinks()))
       ),
-      catchError(() => {
-        actions.clearLinks();
-        return EMPTY;
-      })
+      catchError(() => of(actions.LinkActions.clearLinkDetails()))
     )
   );
 
   fetchNotes$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.fetchNotes),
+      ofType(actions.NotesActions.fetchLinkNotes),
       switchMap(({ linkId }) =>
-        this.notesSrvc
-          .fetchNotes(linkId)
-          .pipe(
-            map((notes) =>
-              notes ? actions.addNotes({ notes }) : actions.clearNotes()
-            )
-          )
-      ),
-      catchError(() => {
-        actions.clearNotes();
-        return EMPTY;
-      })
+        this.notesSrvc.fetchNotes(linkId).pipe(
+          map((notes) => actions.NotesActions.addNotes({ notes })),
+          catchError(() => of(actions.NotesActions.clearNotes()))
+        )
+      )
     )
   );
 
   createNotes$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.createNotes),
+      ofType(actions.NotesActions.createNote),
       switchMap(({ createNote }) =>
         this.notesSrvc
           .createNotes(createNote)
-          .pipe(map((notes) => actions.fetchNotes({ linkId: notes.linkId })))
+          .pipe(
+            map((notes) =>
+              actions.NotesActions.fetchLinkNotes({ linkId: notes.linkId })
+            )
+          )
       )
     )
   );
 
   removeNotes$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.removeNotes),
-      switchMap(({ noteId }) =>
-        this.notesSrvc.removeNotes(noteId).pipe(map(() => actions.clearNotes()))
-      ),
-      catchError(() => {
-        actions.clearNotes();
-        return EMPTY;
-      })
+      ofType(actions.NotesActions.removeNote),
+      switchMap(({ notesId }) =>
+        this.notesSrvc.removeNotes(notesId).pipe(
+          map(() => actions.NotesActions.clearNotes()),
+          catchError(() => of(actions.NotesActions.clearNotes()))
+        )
+      )
     )
   );
 

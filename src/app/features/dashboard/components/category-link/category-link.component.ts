@@ -6,15 +6,11 @@ import {
   Output,
 } from '@angular/core';
 import { LinkItemData } from 'src/app/core/interface/link.model';
+import { ComponentActions } from 'src/app/shared/component-action.interface';
 
 export enum LinkActionEnum {
   'DETAILS' = 'DETAILS',
   'REMOVE' = 'REMOVE',
-}
-
-export interface LinkAction {
-  action: LinkActionEnum;
-  link: LinkItemData;
 }
 
 @Component({
@@ -24,7 +20,9 @@ export interface LinkAction {
 })
 export class CategoryLinkComponent {
   @Input() linkDetails!: LinkItemData;
-  @Output() linkAction = new EventEmitter<LinkAction>();
+  @Output() linkAction = new EventEmitter<
+    ComponentActions<LinkActionEnum, LinkItemData>
+  >();
 
   handleLinkClick(): void {
     window.open(this.linkDetails.url, '_blank');
@@ -34,7 +32,7 @@ export class CategoryLinkComponent {
     this.linkDetails &&
       this.linkAction.emit({
         action: LinkActionEnum.DETAILS,
-        link: this.linkDetails,
+        value: this.linkDetails,
       });
   }
 
@@ -42,7 +40,7 @@ export class CategoryLinkComponent {
     this.linkDetails &&
       this.linkAction.emit({
         action: LinkActionEnum.REMOVE,
-        link: this.linkDetails,
+        value: this.linkDetails,
       });
   }
 }

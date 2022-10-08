@@ -3,8 +3,6 @@ import { Category } from '../core/interface/category.model';
 import { LinkItemData } from '../core/interface/link.model';
 import { Notes } from '../core/interface/notes.model';
 
-export const selectMainState = createFeatureSelector<MainState>('main');
-
 export interface MainState {
   selectedCategory: Category | null;
   selectedLink: LinkItemData | null;
@@ -12,6 +10,16 @@ export interface MainState {
   allCategories: Category[];
   allLinks: LinkItemData[];
 }
+
+export const initialMainState: MainState = {
+  selectedCategory: null,
+  selectedLink: null,
+  selectedLinkNotes: null,
+  allCategories: [],
+  allLinks: [],
+};
+
+export const selectMainState = createFeatureSelector<MainState>('main');
 
 export const getSingleCategory = createSelector(
   selectMainState,
@@ -57,8 +65,7 @@ export const getLinkDetails = createSelector(
 );
 
 export const getNote = createSelector(selectMainState, (state: MainState) => {
-  return (
-    state.selectedLinkNotes?.linkId === state.selectedLink?.linkId &&
-    state.selectedLinkNotes
-  );
+  return state.selectedLinkNotes?.linkId === state.selectedLink?.linkId
+    ? state.selectedLinkNotes
+    : null;
 });

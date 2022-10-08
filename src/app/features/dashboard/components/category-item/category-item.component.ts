@@ -6,15 +6,11 @@ import {
   Output,
 } from '@angular/core';
 import { Category } from 'src/app/core/interface/category.model';
+import { ComponentActions } from 'src/app/shared/component-action.interface';
 
 export enum CategoryActionEnum {
   SELECT = 'SELECT',
   REMOVE = 'REMOVE',
-}
-
-export interface CategoryAction {
-  action: CategoryActionEnum;
-  category: Category;
 }
 
 @Component({
@@ -24,13 +20,15 @@ export interface CategoryAction {
 })
 export class CategoryItemComponent {
   @Input() categoryDetails: Category | null = null;
-  @Output() categoryAction = new EventEmitter<CategoryAction>();
+  @Output() categoryAction = new EventEmitter<
+    ComponentActions<CategoryActionEnum, Category>
+  >();
 
   handleCategoryClick(): void {
     this.categoryDetails &&
       this.categoryAction.emit({
         action: CategoryActionEnum.SELECT,
-        category: this.categoryDetails,
+        value: this.categoryDetails,
       });
   }
 
@@ -38,7 +36,7 @@ export class CategoryItemComponent {
     this.categoryDetails &&
       this.categoryAction.emit({
         action: CategoryActionEnum.REMOVE,
-        category: this.categoryDetails,
+        value: this.categoryDetails,
       });
   }
 }

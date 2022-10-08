@@ -40,6 +40,7 @@
     <app-category-details
       [linkDetails]="linkDetails$ | async"
       [notes]="notes$ | async"
+      (noteEvent)="handleNoteEvents($event)"
     ></app-category-details>
   </div>
 </div>

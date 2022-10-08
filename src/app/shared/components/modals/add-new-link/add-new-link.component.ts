@@ -8,6 +8,7 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Category } from 'src/app/core/interface/category.model';
+import { httpAddressValidator } from 'src/app/shared/validators/http-address.validator';
 
 interface DialogData {
   categories$: Observable<Category[]>;
@@ -29,7 +30,7 @@ export class AddNewLinkComponent {
   addItemFormGroup = this.formBuilder.group({
     categoryId: new FormControl('', Validators.required),
     shortDescription: new FormControl('', Validators.required),
-    url: new FormControl('', Validators.required),
+    url: new FormControl('', [Validators.required, httpAddressValidator()]),
   });
 
   getControl(name: string): AbstractControl {

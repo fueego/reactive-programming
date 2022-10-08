@@ -13,11 +13,7 @@
       {{ notes.notes }}
       <hr class="bg-slate-700 my-2" />
       <div class="flex justify-center items-center py-2">
-        <button
-          mat-raised-button
-          color="warn"
-          (click)="removeNote(notes.noteId ?? '')"
-        >
+        <button mat-raised-button color="warn" (click)="removeNote()">
           Usuń
         </button>
       </div>

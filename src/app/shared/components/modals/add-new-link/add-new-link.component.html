@@ -41,6 +41,10 @@
           <mat-error *ngIf="getControl('url').hasError('required')">
             Adres odnośnia jest wymagany
           </mat-error>
+
+          <mat-error *ngIf="getControl('url').hasError('noHttp')">
+            Proszę podać pełny adres wraz z prefixem http lub https
+          </mat-error>
         </mat-form-field>
       </div>
     </form>

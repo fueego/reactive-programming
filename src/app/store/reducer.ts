@@ -1,84 +1,69 @@
 import { createReducer, on } from '@ngrx/store';
-import { MainState } from './selectors';
+import { initialMainState } from './selectors';
 import * as actions from './actions';
-
-export const initialMainState: MainState = {
-  selectedCategory: null,
-  selectedLink: null,
-  selectedLinkNotes: null,
-  allCategories: [],
-  allLinks: [],
-};
 
 export const mainStateReducer = createReducer(
   initialMainState,
-  on(actions.selectCategory, (state, { selectCategory }) => ({
+  on(actions.CategoryActions.selectCategory, (state, { selectCategory }) => ({
     ...state,
     selectedCategory: selectCategory,
+    selectedLinkNotes: null,
+    selectedLink: null,
   })),
 
-  on(actions.clearSelectedCategory, (state) => ({
+  on(actions.CategoryActions.clearCategory, (state) => ({
     ...state,
     selectedCategory: null,
+    selectedLinkNotes: null,
+    selectedLink: null,
   })),
 
-  on(actions.addCategories, (state, { categories }) => ({
+  on(actions.CategoryActions.addCategories, (state, { categories }) => ({
     ...state,
     allCategories: categories,
   })),
 
-  on(actions.clearCategories, (state) => ({
+  on(actions.CategoryActions.clearCategories, (state) => ({
     ...state,
     allCategories: [],
   })),
 
-  on(actions.removeCategory, (state, { selectCategory }) => {
-    const isNotesReadyToRemove =
-      state.selectedLinkNotes?.categoryId === selectCategory.categoryId;
-    const isSelectedLinkReadyToRemove =
-      state.selectedLink?.categoryId === selectCategory.categoryId;
+  on(
+    actions.CategoryActions.removeCategory,
+    actions.LinkActions.clearLinkDetails,
+    (state) => {
+      return {
+        ...state,
+        selectedLinkNotes: null,
+        selectedLink: null,
+      };
+    }
+  ),
 
-    return {
-      ...state,
-      selectedLinkNotes: isNotesReadyToRemove ? null : state.selectedLinkNotes,
-      selectedLink: isSelectedLinkReadyToRemove ? null : state.selectedLink,
-    };
-  }),
-
-  on(actions.addLinks, (state, { links }) => ({
+  on(actions.LinkActions.addLinks, (state, { links }) => ({
     ...state,
     allLinks: links,
   })),
 
-  on(actions.showLinkDetails, (state, { link }) => ({
+  on(actions.LinkActions.showLinkDetails, (state, { link }) => ({
     ...state,
     selectedLink: link,
   })),
 
-  on(actions.clearCategories, (state) => ({
-    ...state,
-    allLinks: [],
-  })),
-
-  on(actions.removeLink, (state, { linkIdToRemove }) => {
-    const isNotesReadyToRemove =
-      state.selectedLinkNotes?.linkId === linkIdToRemove;
-    const isSelectedLinkReadyToRemove =
-      state.selectedLink?.linkId === linkIdToRemove;
-
+  on(actions.LinkActions.removeLink, (state) => {
     return {
       ...state,
-      selectedLinkNotes: isNotesReadyToRemove ? null : state.selectedLinkNotes,
-      selectedLink: isSelectedLinkReadyToRemove ? null : state.selectedLink,
+      selectedLinkNotes: null,
+      selectedLink: null,
     };
   }),
 
-  on(actions.addNotes, (state, { notes }) => ({
+  on(actions.NotesActions.addNotes, (state, { notes }) => ({
     ...state,
     selectedLinkNotes: { ...notes },
   })),
 
-  on(actions.clearNotes, (state) => ({
+  on(actions.NotesActions.clearNotes, (state) => ({
     ...state,
     selectedLinkNotes: null,
   }))

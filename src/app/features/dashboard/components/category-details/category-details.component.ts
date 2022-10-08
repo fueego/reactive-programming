@@ -1,14 +1,19 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
-  OnChanges,
-  SimpleChanges,
+  Output,
 } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { LinkItemData } from 'src/app/core/interface/link.model';
 import { Notes } from 'src/app/core/interface/notes.model';
-import * as actions from 'src/app/store/actions';
+
+export interface NoteAction {
+  action: 'addNote' | 'removeNote';
+  link: LinkItemData | null;
+  notes: Notes | null;
+  newNotes?: string;
+}
 
 @Component({
   selector: 'app-category-details',
@@ -17,28 +22,30 @@ import * as actions from 'src/app/store/actions';
 })
 export class CategoryDetailsComponent {
   @Input() linkDetails: LinkItemData | null = null;
-  @Input() notes: false | Notes | null = null;
+  @Input() notes: Notes | null = null;
+  @Output() noteEvent = new EventEmitter<NoteAction>();
 
   noteData = '';
 
-  constructor(private store: Store) {}
+  constructor() {}
 
   addNote(): void {
     !!this.noteData &&
-      this.store.dispatch(
-        actions.createNotes({
-          createNote: {
-            categoryId: this.linkDetails?.categoryId ?? '',
-            linkId: this.linkDetails?.linkId ?? '',
-            notes: this.noteData,
-          },
-        })
-      );
+      this.noteEvent.emit({
+        action: 'addNote',
+        link: this.linkDetails,
+        notes: this.notes,
+        newNotes: this.noteData,
+      });
 
     this.noteData = '';
   }
 
-  removeNote(noteId: string): void {
-    !!noteId && this.store.dispatch(actions.removeNotes({ noteId }));
+  removeNote(): void {
+    this.noteEvent.emit({
+      action: 'removeNote',
+      notes: this.notes,
+      link: this.linkDetails,
+    });
   }
 }

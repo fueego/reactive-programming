@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Notes } from '../interface/notes.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotesService {
-  url = 'http://localhost:3000/notes';
+  url = `${environment.host}/notes`;
 
   constructor(private http: HttpClient) {}
 
@@ -19,7 +20,7 @@ export class NotesService {
     return this.http.post<Notes>(this.url, createNote);
   }
 
-  removeNotes(noteId: string): Observable<void> {
-    return this.http.delete<void>(`${this.url}/${noteId}`);
+  removeNotes(notesId: string): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${notesId}`);
   }
 }

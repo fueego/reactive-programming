@@ -7,3 +7,12 @@ canvas {
 }
 
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.success-snackbar {
+    color: #424242 !important;
+    background: #fff !important;
+
+    button span.mat-button-wrapper {
+        color: #2563eb;
+    }
+}

@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { filter, of, switchMap } from 'rxjs';
+import { filter, of, switchMap, tap } from 'rxjs';
 import { Category } from 'src/app/core/interface/category.model';
 import { LinkItemData } from 'src/app/core/interface/link.model';
-import * as actions from 'src/app/store/actions';
-import * as select from 'src/app/store/selectors';
+import { NotificationsService } from 'src/app/core/services/notifications.service';
 import { AddNewCategoryComponent } from '../modals/add-new-category/add-new-category.component';
 import { NewCategoryData } from '../modals/add-new-category/new-category.interface';
 import { AddNewLinkComponent } from '../modals/add-new-link/add-new-link.component';
+import { AppMainState } from 'src/app/store/app.state';
+import * as actions from 'src/app/store/actions';
+import * as select from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-header',
@@ -20,7 +22,11 @@ export class HeaderComponent {
   showMobileMenu = false;
   autocompleteCategories$ = this.store.select(select.getAllCategoriesRaw);
 
-  constructor(public dialog: MatDialog, private store: Store) {}
+  constructor(
+    public dialog: MatDialog,
+    private store: Store<AppMainState>,
+    private notification: NotificationsService
+  ) {}
 
   toggleMobileMenu(): void {
     this.showMobileMenu = !this.showMobileMenu;
@@ -28,14 +34,17 @@ export class HeaderComponent {
 
   openAddCategoryModal(): void {
     const dialogRef = this.dialog.open(AddNewCategoryComponent);
+    let newCategory = '';
+
     dialogRef
       .afterClosed()
       .pipe(
         filter((data) => !!data),
+        tap((newCat: NewCategoryData) => (newCategory = newCat.name)),
         switchMap((newCategory: NewCategoryData) =>
           of(
             this.store.dispatch(
-              actions.addCategory({
+              actions.CategoryActions.addCategory({
                 newCategory: {
                   ...newCategory,
                   color: `#${newCategory?.color?.hex}`,
@@ -45,8 +54,12 @@ export class HeaderComponent {
           )
         )
       )
-      .subscribe(() => {
-        // TODO: show success notification with category name
+      .subscribe({
+        next: () => {
+          this.notification.openSnackBarSuccess(
+            `Dodałeś kategorię ${newCategory}`
+          );
+        },
       });
   }
 
@@ -56,30 +69,37 @@ export class HeaderComponent {
         categories$: this.autocompleteCategories$,
       },
     });
+    let newLinkAdd = '';
+
     dialogRef
       .afterClosed()
       .pipe(
         filter((data) => !!data),
+        tap((newLink: LinkItemData) => (newLinkAdd = newLink.shortDescription)),
         switchMap((link: LinkItemData) =>
           of(
             this.store.dispatch(
-              actions.addLink({
+              actions.LinkActions.addLink({
                 link,
               })
             )
           )
         )
       )
-      .subscribe(() => {
-        // TODO: show success notification with category name
+      .subscribe({
+        next: () => {
+          this.notification.openSnackBarSuccess(
+            `Dodałeś nowy link ${newLinkAdd}`
+          );
+        },
       });
   }
 
   handleCategorySelection(category: Category): void {
     category.categoryId !== null
       ? this.store.dispatch(
-          actions.selectCategory({ selectCategory: category })
+          actions.CategoryActions.selectCategory({ selectCategory: category })
         )
-      : this.store.dispatch(actions.clearSelectedCategory());
+      : this.store.dispatch(actions.CategoryActions.clearCategory());
   }
 }
