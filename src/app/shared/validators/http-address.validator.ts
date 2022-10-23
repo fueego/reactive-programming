@@ -9,7 +9,7 @@ export function httpAddressValidator(): ValidatorFn {
     }
 
     if (
-      !addressValue.match(/^http[s]?:\/\/+[\w]+.[\w]+.([\w]{3}|[\w]{2})$/gi)
+      !addressValue.match(/^http[s]?:\/\/+[\w]+.[\w-]+.([\w]{3}|[\w]{2})$/gi)
     ) {
       return { noHttp: true };
     }

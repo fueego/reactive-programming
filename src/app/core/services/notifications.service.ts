@@ -10,4 +10,10 @@ export class NotificationsService {
       panelClass: ['success-snackbar'],
     });
   }
+
+  openSnackBarError(error: string) {
+    this._snackBar.open(error, 'OK', {
+      panelClass: ['error-snackbar'],
+    });
+  }
 }

@@ -16,3 +16,12 @@ canvas {
         color: #2563eb;
     }
 }
+
+.error-snackbar {
+    color: #fff !important;
+    background: #ed0b0b !important;
+
+    button span.mat-button-wrapper {
+        color: #000;
+    }
+}
